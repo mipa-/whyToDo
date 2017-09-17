@@ -25,10 +25,13 @@ app.get('/', function (req, res) {
 io.sockets.on('connection', function(socket) {
 
   fs.readFile('/Users/paula/whytodo/test', "utf8" , (err, data) => {
-    if (err) throw err;
+    if (err) {
+      throw err;
+    }
     console.log(data);
-    if (data != "")
+    if (data != "") {
       items = data.split(",");
+    }
     console.log("readfile data" , items)
   });
   
@@ -59,7 +62,23 @@ io.sockets.on('connection', function(socket) {
         return console.log(err);
       }
     });
+    console.log("deleted item: " , data)
+    console.log("items after delete: " , items)
   })
+
+  socket.on('edit_item' , function(data1, data2) {
+    var i = items.indexOf(data1);
+    items.splice(i,1);
+    items.splice(i,0,data2);
+    fs.writeFile("/Users/paula/whytodo/test", items, function(err) {
+      if(err) {
+        return console.log(err);
+      }
+    });
+    console.log("edited item: " , (data1 + " -> " + data2))
+    console.log("items after edit: " , items)
+  })
+
 
 /*
   socket.on('disconnect', function() {

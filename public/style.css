@@ -35,6 +35,10 @@ ul li:hover {
     background: #ddd;
 }
 
+ul li:hover .edit {
+    display: block;
+}
+
 /* When clicked on, add a background color and strike out text */
 ul li.checked {
     background: #888;
@@ -69,6 +73,19 @@ ul li.checked::before {
     color: white;
 }
 
+.edit {
+    display: none;
+    position: absolute;
+    right: 42.16px;
+    top: 0;
+    padding: 12px 16px 12px 16px;
+}
+
+.edit:hover {
+    background-color: red;
+    color: white;
+}
+
 /* Style the header */
 .header {
     background-color: #b69b54;
@@ -91,6 +108,10 @@ input {
     padding: 10px;
     float: left;
     font-size: 16px;
+}
+
+input.myEdit {
+    padding: 0;
 }
 
 /* Style the "Add" button */

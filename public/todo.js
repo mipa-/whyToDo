@@ -2,7 +2,9 @@ var socket = io.connect();
 
 // Click on a close button to hide the current list item
 var close = document.getElementsByClassName("close");
-console.log("ihan mitä vaan")
+var edit = document.getElementsByClassName("edit");
+var editBtn = document.getElementsByClassName("addBtn1");
+console.log("editBtn" , editBtn)
 
 // Add a "checked" symbol when clicking on a list item
 var list = document.querySelector('ul');
@@ -25,11 +27,19 @@ function newElement() {
   }
   document.getElementById("myInput").value = "";
 
+  var span1 = document.createElement("SPAN");
+  var txt1 = document.createTextNode("✏️");
+  span1.className = "edit";
+  span1.appendChild(txt1);
+  li.appendChild(span1);
+
   var span = document.createElement("SPAN");
   var txt = document.createTextNode("\u00D7");
   span.className = "close";
   span.appendChild(txt);
   li.appendChild(span);
+
+  edit_item();
 
   delete_item();
 
@@ -46,6 +56,11 @@ document.getElementById("myInput").addEventListener("keydown", function(e) {
     }
 });
 
+document.getElementById("myBtn").onclick = function(e){
+  console.log("buttonevent")
+  newElement();
+}
+
 socket.on('list_todo_items', function(items) {
   console.log("cons name: "  , items.constructor.name)  
   var list = document.getElementById("myUL");
@@ -53,12 +68,22 @@ socket.on('list_todo_items', function(items) {
     var li = document.createElement("li");
     li.innerText = items[i];
     list.appendChild(li);
+
+    var span1 = document.createElement("SPAN");
+    var txt1 = document.createTextNode("✏️");
+    span1.className = "edit";
+    span1.appendChild(txt1);
+    li.appendChild(span1);
+
     var span = document.createElement("SPAN");
     var txt = document.createTextNode("\u00D7");
     span.className = "close";
     span.appendChild(txt);
     li.appendChild(span);
   }
+
+  edit_item();
+
   delete_item();
   
 })
@@ -71,6 +96,55 @@ function delete_item() {
       var text = div.firstChild.textContent;
       div.style.display = "none";
       socket.emit('delete_item', text);
+    }
+  }
+}
+
+function edit_item() {
+  console.log("edit item")
+  for (i = 0; i < edit.length; i++) {
+    edit[i].onclick = function() {
+      var div = this.parentElement;
+      console.log("div" , div)
+      var text = div.firstChild.textContent;
+      div.innerText = '';
+      div.innerHTML = '<input type="text" id="myEdit" value="' + text 
+        + '"><span id="mySaveBtn" class="addBtn1">Save</span>';
+      console.log("text" , text)
+//      console.log("len2" , editBtn.length)
+      //socket.emit('edit_item' , text);
+
+      console.log("len" , editBtn.length)
+      for (i = 0; i < editBtn.length; i++) {
+        editBtn[i].onclick = function() {
+          var inputValue = document.getElementById("myEdit").value;
+          console.log("value " , inputValue)
+          div.innerText = '';
+          //div.innerText = inputValue; 
+
+          var li = document.createElement("li");
+          var t = document.createTextNode(inputValue);
+          div.appendChild(t);
+
+          var span1 = document.createElement("SPAN");
+          var txt1 = document.createTextNode("✏️");
+          span1.className = "edit";
+          span1.appendChild(txt1);
+          div.appendChild(span1);
+
+          var span = document.createElement("SPAN");
+          var txt = document.createTextNode("\u00D7");
+          span.className = "close";
+          span.appendChild(txt);
+          div.appendChild(span);
+
+          edit_item();
+
+          delete_item();
+
+          socket.emit('edit_item', text, inputValue);
+        }
+      }
     }
   }
 }
