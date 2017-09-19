@@ -16,7 +16,7 @@ ul li {
     padding: 12px 8px 12px 40px;
     background: #eee;
     font-size: 18px;
-    transition: 0.2s;
+    //transition: 0.2s;
 
     /* make the list items unselectable */
     -webkit-user-select: none;
@@ -82,7 +82,20 @@ ul li.checked::before {
 }
 
 .edit:hover {
-    background-color: red;
+    background-color: #b69b54;
+    color: white;
+}
+
+.save {
+    //display: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 10px 14px 10px 14px;
+}
+
+.save:hover {
+    background-color: #b69b54;
     color: white;
 }
 
@@ -101,8 +114,7 @@ ul li.checked::before {
     clear: both;
 }
 
-/* Style the input */
-input {
+input.addItem {
     border: none;
     width: 75%;
     padding: 10px;
@@ -110,8 +122,22 @@ input {
     font-size: 16px;
 }
 
+/* Style the input */
+input {
+    border: none;
+    width: 75%;
+    padding: 10px;
+    //float: left;
+    font-size: 16px;
+}
+
 input.myEdit {
     padding: 0;
+}
+
+.item_edit {
+    padding-top: 4px;
+    padding-bottom: 4px;
 }
 
 /* Style the "Add" button */

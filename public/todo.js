@@ -3,7 +3,7 @@ var socket = io.connect();
 // Click on a close button to hide the current list item
 var close = document.getElementsByClassName("close");
 var edit = document.getElementsByClassName("edit");
-var editBtn = document.getElementsByClassName("addBtn1");
+var editBtn = document.getElementsByClassName("save");
 console.log("editBtn" , editBtn)
 
 // Add a "checked" symbol when clicking on a list item
@@ -105,11 +105,14 @@ function edit_item() {
   for (i = 0; i < edit.length; i++) {
     edit[i].onclick = function() {
       var div = this.parentElement;
-      console.log("div" , div)
+      console.log("divvi" , div)
       var text = div.firstChild.textContent;
+      var joo = div.children;
+      div.classList.add("item_edit");
+      console.log("joo " , joo)
       div.innerText = '';
       div.innerHTML = '<input type="text" id="myEdit" value="' + text 
-        + '"><span id="mySaveBtn" class="addBtn1">Save</span>';
+        + '"><span id="mySaveBtn" class="save">💾</span>';
       console.log("text" , text)
 //      console.log("len2" , editBtn.length)
       //socket.emit('edit_item' , text);
@@ -137,6 +140,8 @@ function edit_item() {
           span.className = "close";
           span.appendChild(txt);
           div.appendChild(span);
+
+          div.classList.remove("item_edit");
 
           edit_item();
 
