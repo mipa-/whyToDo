@@ -15,6 +15,7 @@ var io = require('socket.io').listen(server);
 app.use(express.static('public'));
 
 var items = [];
+var deleted_items = [];
 
 //GET request for homepage
 app.get('/', function (req, res) {
@@ -62,8 +63,19 @@ io.sockets.on('connection', function(socket) {
         return console.log(err);
       }
     });
+
+    deleted_items.push(data);
+
+    fs.writeFile("/Users/paula/whytodo/deleted_items", deleted_items, function(err) {
+      if(err) {
+        return console.log(err);
+      }
+      console.log("The file deleted_items was saved!");
+    }); 
+
     console.log("deleted item: " , data)
     console.log("items after delete: " , items)
+    console.log("deleted items: " , deleted_items)
   })
 
   socket.on('edit_item' , function(data1, data2) {
