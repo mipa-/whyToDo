@@ -66,8 +66,10 @@ socket.on('list_todo_items', function(items) {
   var list = document.getElementById("myUL");
   for(i = 0; i < items.length; i++) {
     var li = document.createElement("li");
-    li.innerText = items[i];
+    li.innerText = i + ': ' + items[i];
     list.appendChild(li);
+    li.className = "column id-" + i;
+    li.setAttribute('draggable', true);
 
     var span1 = document.createElement("SPAN");
     var txt1 = document.createTextNode("✏️");
@@ -80,6 +82,10 @@ socket.on('list_todo_items', function(items) {
     span.className = "close";
     span.appendChild(txt);
     li.appendChild(span);
+
+    //var cols = document.querySelectorAll('.column');
+    //console.log("columns" , cols);
+    addDnDHandlers(li);
   }
 
   edit_item();
@@ -153,3 +159,95 @@ function edit_item() {
     }
   }
 }
+
+var dragSrcEl = null;
+
+function handleDragStart(e) {
+  // Target (this) element is the source node.
+  console.log("draggaa")
+  dragSrcEl = e;
+
+}
+
+function handleDragOver(e) {
+  if (e.preventDefault) {
+    e.preventDefault(); // Necessary. Allows us to drop.
+  }
+
+  e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
+
+  if (dragSrcEl.target == this) {
+    return false;
+  }
+
+  this.classList.add('over');
+
+  return false;
+}
+
+function handleDragEnter(e) {
+  // this / e.target is the current hover target.
+}
+
+function handleDragLeave(e) {
+  this.classList.remove('over');  // this / e.target is previous target element.
+}
+
+function handleDrop(e) {
+
+  // console.log('e', e)
+  // this/e.target is current target element.
+
+  if (e.stopPropagation) {
+    e.stopPropagation(); // Stops some browsers from redirecting.
+  }
+
+  // Don't do anything if dropping the same column we're dragging.
+  if (dragSrcEl.target != this) {
+
+    dragY = dragSrcEl.screenY;
+    targetY = this.getBoundingClientRect().top;
+    targetHeight = this.offsetHeight / 2;
+
+    var position = "beforebegin"
+    if(e.pageY >= targetY + targetHeight) {
+      // console.log("targetheight hiuraaaaa")
+      position = "afterend"
+    }
+
+    dragSrcEl.target.parentNode.removeChild( dragSrcEl.target );
+    e.target.parentNode.appendChild( dragSrcEl.target );
+    this.insertAdjacentElement(position,dragSrcEl.target);
+
+
+  }
+
+  this.classList.remove('over');
+  return false;
+}
+
+function handleDragEnd(e) {
+  // this/e.target is the source node.
+  this.classList.remove('over');
+
+  /*[].forEach.call(cols, function (col) {
+    col.classList.remove('over');
+  });*/
+}
+
+function addDnDHandlers(elem) {
+  elem.addEventListener('dragstart', handleDragStart, false);
+  elem.addEventListener('dragenter', handleDragEnter, false)
+  elem.addEventListener('dragover', handleDragOver, false);
+  elem.addEventListener('dragleave', handleDragLeave, false);
+  elem.addEventListener('drop', handleDrop, false);
+  elem.addEventListener('dragend', handleDragEnd, false);
+}
+
+
+
+
+
+
+
+
